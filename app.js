@@ -9,37 +9,53 @@ GAME RULES:
 
 */
 
-var scores;
-var currentScore;
-var activePlayer;
-//var tossDice;
+var scores, turnScore, activePlayer,playGame;
 
-scores = [0,0];
-currentScore = 0;
-activePlayer = 0;
+function init(){
+    scores=[0,0];
+    turnScore=0;
+    activePlayer=0;
+    playGame=true;
+    document.querySelector('.dice-image').style.display='none';
+}
 
-//when roll dice button is clicked
-document.querySelector(".btn-roll").addEventListener('click', function(){
-    
-    //generate random number to roll the dice
-    var rollDice=Math.floor(Math.random()*6)+1;
-    
-    //update the current score of the active player
-    
-    var diceimage=document.getElementById("dice-1");
-    diceimage.style.display="block";
-    diceimage.src="dice-"+rollDice+".png";
-    
-    //if the player is not 1 
-    if(rollDice!==1){
-        currentScore+=rollDice;
-        document.querySelector("#current-"+activePlayer).textContent=rollDice;
-    }else{//otherwise switch the player
-        activePlayer===0?activePlayer=1:activePlayer=0;
-        currentScore=0;
+init();
+document.querySelector('.btn-roll').addEventListener('click',function(){
+    if(playGame){
+        var random=Math.floor(Math.random()*6)+1;
+        var domDice=document.querySelector('.dice-image');
+        domDice.style.display='block';
+        domDice.src="dice-"+random+".png";
+        console.log('btn clicked'+random);
+
+        if(random!==1){
+            turnScore+=random;
+        }else{
+            nextPlayer();
+
+        }
     }
+   
+});
 
+document.querySelector('.btn-hold').addEventListener('click',function(){
+    if(playGame){
+        scores[activePlayer]+=turnScore;
+        document.getElementById('score-'+activePlayer).textContent=scores[activePlayer];
+        if(scores[activePlayer]>=25){
+            document.getElementById('name-'+activePlayer).textContent="winner";
+            playGame=false;
+        }else{
+            nextPlayer();     
+        }  
+    }
     
-})
-    
+});
 
+function nextPlayer(){
+    activePlayer===0?activePlayer=1:activePlayer=0;
+    turnScore=0;
+    document.querySelector('.dice-image').style.display='none';
+}
+
+document.querySelector('.btn-new').addEventListener('click',init);
